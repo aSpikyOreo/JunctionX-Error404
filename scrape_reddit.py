@@ -51,5 +51,5 @@ with open('data.json', 'w') as f:
                     # print(comments)
                     sub_dict['comments'] = comments
                     list_of_items.append(sub_dict)
-            json.dump(list_of_items, f)
+    json.dump(list_of_items, f)
 f.close()
