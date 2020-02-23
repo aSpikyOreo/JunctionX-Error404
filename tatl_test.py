@@ -26,7 +26,7 @@ for n, (title, ID,body,score,subreddit,best_comment, second_best_comment ) in en
 
 
 #print("Tatl says: "+ str(len(tatls_dict["title"])))
-print(tatls_dict["id"])
+#print(tatls_dict["id"])
 
 print("Training data: "  + str(len(train_dict)))
 print("Validation data: " + str(len(validation_dict)))
@@ -44,7 +44,7 @@ all_text = ''.join([c for c in body_text if c not in punctuation])
 #print(all_text)
 ########################################################### ~> create review list
 body_split = all_text.split('\n')
-print("Number of body_text: ", len(body_split))
+#print("Number of body_text: ", len(body_split))
 ########################################################### ~> Tokenizing v->to->I map dict
 from collections import Counter
 
@@ -56,20 +56,20 @@ sorted_words = word_count.most_common(val)
 #print(word_count)
 
 vocab_to_int = {w:i+1 for i, (w,c) in enumerate(sorted_words)}
-print(vocab_to_int)
+#print(vocab_to_int)
 ########################################################### ~> Tokenizing: Encoding Words
 body_int = []
 msg_list = body_split
-print(msg_list)
+#print(msg_list)
 for b in body_split:
     r = [vocab_to_int.get(w) for w in b]
     body_int.append(r)
-print (body_int[0:3])
+#print (body_int[0:3])
 
 ########################################################### ~> Tokenizing: Encoding labels
 encoded_labels = [1 if label=='positive' else 0 for label in validation_dict]
 encoded_labels = np.array(encoded_labels)
-print(encoded_labels)
+#print(encoded_labels)
 ########################################################## ~> Analyse reviews lengths
 import pandas as pd
 body_len = [len(x) for x in body_int]
@@ -120,7 +120,7 @@ test_y = remaining_y[int(len(remaining_y)*0.5):]
 ###################################################################
 import torch
 from torch.utils.data import DataLoader, TensorDataset
-train_data = TensorDataset(torch.from_numpy(train_x), torch.from_numpy(train_y))
+train_data = torch.stack(torch.from_numpy(train_x), torch.from_numpy(train_y))
 valid_data = TensorDataset(torch.from_numpy(valid_x), torch.from_numpy(valid_y))
 test_data = TensorDataset(torch.from_numpy(test_x), torch.from_numpy(test_y))
 
@@ -221,13 +221,13 @@ net = SentimentLSTM(vocab_size, output_size, embedding_dim, hidden_dim, n_layers
 
 print(net)
 
-SentimentLSTM(
-  (embedding): Embedding(74073, 400)
-  (lstm): LSTM(400, 256, num_layers=2, batch_first=True, dropout=0.5)
-  (dropout): Dropout(p=0.3)
-  (fc): Linear(in_features=256, out_features=1, bias=True)
-  (sig): Sigmoid()
-)
+# SentimentLSTM(
+#   (embedding): Embedding(74073, 400),
+#   (lstm): LSTM(400, 256, num_layers=2, batch_first=True, dropout=0.5),
+#   (dropout): Dropout(p=0.3),
+#   (fc): Linear(in_features=256, out_features=1, bias=True),
+#   (sig): Sigmoid()
+# )
 
 
 # loss and optimization functions
@@ -306,6 +306,122 @@ for e in range(epochs):
                   "Step: {}...".format(counter),
                   "Loss: {:.6f}...".format(loss.item()),
                   "Val Loss: {:.6f}".format(np.mean(val_losses)))
+
+
+
+        # Get test data loss and accuracy
+
+    test_losses = [] # track loss
+    num_correct = 0
+
+    # init hidden state
+    h = net.init_hidden(batch_size)
+
+    net.eval()
+    # iterate over test data
+    for inputs, labels in test_loader:
+
+        # Creating new variables for the hidden state, otherwise
+        # we'd backprop through the entire training history
+        h = tuple([each.data for each in h])
+
+        if(train_on_gpu):
+            inputs, labels = inputs.cuda(), labels.cuda()
+
+        # get predicted outputs
+        inputs = inputs.type(torch.LongTensor)
+        output, h = net(inputs, h)
+
+        # calculate loss
+        test_loss = criterion(output.squeeze(), labels.float())
+        test_losses.append(test_loss.item())
+
+        # convert output probabilities to predicted class (0 or 1)
+        pred = torch.round(output.squeeze())  # rounds to the nearest integer
+
+        # compare predictions to true label
+        correct_tensor = pred.eq(labels.float().view_as(pred))
+        correct = np.squeeze(correct_tensor.numpy()) if not train_on_gpu else np.squeeze(correct_tensor.cpu().numpy())
+        num_correct += np.sum(correct)
+
+
+# -- stats! -- ##
+# avg test loss
+print("Test loss: {:.3f}".format(np.mean(test_losses)))
+
+# accuracy over all test data
+test_acc = num_correct/len(test_loader.dataset)
+print("Test accuracy: {:.3f}".format(test_acc))
+
+
+from string import punctuation
+
+def tokenize_review(test_review):
+    test_review = test_review.lower() # lowercase
+    # get rid of punctuation
+    test_text = ''.join([c for c in test_review if c not in punctuation])
+
+    # splitting by spaces
+    test_words = test_text.split()
+
+    # tokens
+    test_ints = []
+    test_ints.append([vocab_to_int[word] for word in test_words])
+
+    return test_ints
+
+# test code and generate tokenized review
+test_ints = tokenize_review(test_review_neg)
+print(test_ints)
+
+
+# test sequence padding
+seq_length=200
+features = pad_features(test_ints, seq_length)
+
+print(features)
+
+
+# test conversion to tensor and pass into your model
+feature_tensor = torch.from_numpy(features)
+print(feature_tensor.size())
+
+
+def predict(net, test_review, sequence_length=200):
+
+    net.eval()
+
+    # tokenize review
+    test_ints = tokenize_review(test_review)
+
+    # pad tokenized sequence
+    seq_length=sequence_length
+    features = pad_features(test_ints, seq_length)
+
+    # convert to tensor to pass into your model
+    feature_tensor = torch.from_numpy(features)
+
+    batch_size = feature_tensor.size(0)
+
+    # initialize hidden state
+    h = net.init_hidden(batch_size)
+
+    if(train_on_gpu):
+        feature_tensor = feature_tensor.cuda()
+
+    # get the output from the model
+    output, h = net(feature_tensor, h)
+
+    # convert output probabilities to predicted class (0 or 1)
+    pred = torch.round(output.squeeze())
+    # printing output value, before rounding
+    print('Prediction value, pre-rounding: {:.6f}'.format(output.item()))
+
+    # print custom response
+    if(pred.item()==1):
+        print("Positive review detected!")
+    else:
+        print("Negative review detected.")
 
 
 #build Tensors
