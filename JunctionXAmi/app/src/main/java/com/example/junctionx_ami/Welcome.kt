@@ -1,7 +1,5 @@
 package com.example.junctionx_ami
-import android.graphics.Color
 import android.graphics.Typeface
-import android.graphics.drawable.Drawable
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,7 +9,6 @@ import com.igalata.bubblepicker.BubblePickerListener
 import com.igalata.bubblepicker.adapter.BubblePickerAdapter
 import com.igalata.bubblepicker.model.BubbleGradient
 import com.igalata.bubblepicker.model.PickerItem
-import com.igalata.bubblepicker.rendering.BubblePicker
 import kotlinx.android.synthetic.main.activity_welcome.*
 import java.lang.Math.random
 
@@ -62,10 +59,11 @@ class Welcome : AppCompatActivity() {
 
         picker.bubbleSize = 45
         picker.listener = object : BubblePickerListener {
-            override fun onBubbleSelected(item: PickerItem) = toast("${item.title} selected")
+            override fun onBubbleSelected(item: PickerItem) = toast("")//"${item.title} selected")
 
-            override fun onBubbleDeselected(item: PickerItem) = toast("${item.title} deselected")
+            override fun onBubbleDeselected(item: PickerItem) = toast("")//""${item.title} deselected")
         }
+
     }
 
     override fun onResume() {
