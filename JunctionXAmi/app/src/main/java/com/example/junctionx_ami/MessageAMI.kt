@@ -1,8 +1,6 @@
 package com.example.scaledrone.chat
 
-//import android.R.*
 import android.os.Bundle
-//import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.EditText
 import android.widget.ListView
@@ -12,17 +10,11 @@ import com.example.junctionx_ami.ChatRoom.Message
 import com.example.junctionx_ami.R
 
 import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.scaledrone.lib.Listener
-import com.scaledrone.lib.Member
 import com.scaledrone.lib.Room
 import com.scaledrone.lib.RoomListener
 import com.scaledrone.lib.Scaledrone
-
-import java.util.Random
-
-//import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
 
 class MessageAMI : AppCompatActivity(), RoomListener {
 
@@ -45,7 +37,6 @@ class MessageAMI : AppCompatActivity(), RoomListener {
         messagesView = findViewById(R.id.messages_view) as ListView
         messagesView!!.adapter = messageAdapter
 
-//        val data = MemberData(randomName, randomColor)
 
         scaledrone = Scaledrone(channelID, null)
         scaledrone!!.connect(object : Listener {
@@ -87,7 +78,7 @@ class MessageAMI : AppCompatActivity(), RoomListener {
     override fun onMessage(room: Room, receivedMessage: com.scaledrone.lib.Message) {
         val mapper = ObjectMapper()
         try {
-//            val data = mapper.treeToValue(receivedMessage.member.clientData, MemberData::class.java)
+
             val belongsToCurrentUser = receivedMessage.clientID == scaledrone!!.clientID
             val message = Message(receivedMessage.data.asText(), belongsToCurrentUser)
             runOnUiThread {
