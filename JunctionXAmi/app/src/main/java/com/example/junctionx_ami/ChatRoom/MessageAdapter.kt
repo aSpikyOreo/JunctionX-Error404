@@ -53,15 +53,15 @@ class MessageAdapter(internal var context: Context) : BaseAdapter() {
             holder.messageBody!!.setText(message.getText())
         } else {
             convertView = messageInflater.inflate(R.layout.messageami_amimessage, null)
-            holder.avatar = convertView.findViewById(R.id.avatar) as View
+//            holder.avatar = convertView.findViewById(R.id.avatar) as View
             holder.name = convertView.findViewById(R.id.name) as TextView
             holder.messageBody = convertView.findViewById(R.id.message_body) as TextView
             convertView.tag = holder
 
-            holder.name!!.setText(message.getMemberData().getName())
+//            holder.name!!.setText(message.getMemberData().getName())
             holder.messageBody!!.setText(message.getText())
-            val drawable = holder.avatar!!.background as GradientDrawable
-            drawable.setColor(Color.parseColor(message.getMemberData().getColor()))
+//            val drawable = holder.avatar!!.background as GradientDrawable
+//            drawable.setColor(Color.parseColor(message.getMemberData().getColor()))
         }
 
         return convertView
