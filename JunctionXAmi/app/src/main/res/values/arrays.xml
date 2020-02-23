@@ -15,17 +15,17 @@
     </string-array>
 
     <integer-array name="images">
-        <item>@mipmap/happy</item>
-        <item>@mipmap/sad</item>
-        <item>@mipmap/angery</item>
-        <item>@mipmap/depressed</item>
-        <item>@mipmap/anxious</item>
-        <item>@mipmap/productive</item>
-        <item>@mipmap/content</item>
-        <item>@mipmap/stressed</item>
-        <item>@mipmap/tired</item>
-        <item>@mipmap/bored</item>
-        <item>@mipmap/excited</item>
+        <item>@mipmap/happy_round</item>
+        <item>@mipmap/sad_round</item>
+        <item>@mipmap/angery_round</item>
+        <item>@mipmap/depressed_round</item>
+        <item>@mipmap/anxious_round</item>
+        <item>@mipmap/productive_round</item>
+        <item>@mipmap/content_round</item>
+        <item>@mipmap/stressed_round</item>
+        <item>@mipmap/tired_round</item>
+        <item>@mipmap/bored_round</item>
+        <item>@mipmap/excited_round</item>
     </integer-array>
 
     <integer-array name="colors">
