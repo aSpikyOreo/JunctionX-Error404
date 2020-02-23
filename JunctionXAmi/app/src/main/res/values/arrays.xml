@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="emotions">
+        <item>Happy</item>
+        <item>Sad</item>
+        <item>Angry</item>
+        <item>Depressed</item>
+        <item>Anxious</item>
+        <item>Productive</item>
+        <item>Content</item>
+        <item>Stressed</item>
+        <item>Tired</item>
+        <item>Bored</item>
+        <item>Excited</item>
+    </string-array>
+
+    <integer-array name="images">
+        <item>@mipmap/happy</item>
+        <item>@mipmap/sad</item>
+        <item>@mipmap/angery</item>
+        <item>@mipmap/depressed</item>
+        <item>@mipmap/anxious</item>
+        <item>@mipmap/productive</item>
+        <item>@mipmap/content</item>
+        <item>@mipmap/stressed</item>
+        <item>@mipmap/tired</item>
+        <item>@mipmap/bored</item>
+        <item>@mipmap/excited</item>
+    </integer-array>
+
+    <integer-array name="colors">
+        <item>@color/colorA</item>
+        <item>@color/colorB</item>
+        <item>@color/ColorC</item>
+        <item>@color/ColorD</item>
+        <item>@color/ColorE</item>
+    </integer-array>
+
+</resources>
+
