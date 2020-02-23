@@ -25,7 +25,7 @@ num = 0
 # types = string, string, int, string, [string]
 #fields = ('title','id','score','subreddit','comments')
 #go through subreddits in above dict
-with open('training_data.json', 'w') as f:
+with open('testing_data.json', 'w') as f:
     for type in mh_dict:
         print('*'*30)
         print(type+'\n') #what type of mental health issue is it
@@ -52,7 +52,8 @@ with open('training_data.json', 'w') as f:
                     #print(coms)
                     submission.comments.replace_more(limit=0)
                     if len(submission.comments.list()) > 0:
-                        submission.comment_sort = 'best'
+                        #new for testing, best for training
+                        submission.comment_sort = 'new'
                         comments = submission.comments.list()
                         if len(comments) >=2:
                             best_str = comments[0].body
